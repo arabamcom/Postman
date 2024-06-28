@@ -1,8 +1,10 @@
 package com.cafermertceyhan.postmanlib
 
 import android.app.Activity
+import android.content.Context.RECEIVER_EXPORTED
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.google.android.gms.auth.api.phone.SmsRetriever
@@ -60,10 +62,18 @@ internal class PostmanFragment : Fragment() {
     }
 
     private fun registerToPostmanBroadcastReceiver() {
-        activity?.registerReceiver(
-            postmanBroadcastReceiver,
-            IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION)
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            activity?.registerReceiver(
+                postmanBroadcastReceiver,
+                IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION),
+                RECEIVER_EXPORTED
+            )
+        } else {
+            activity?.registerReceiver(
+                postmanBroadcastReceiver,
+                IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION)
+            )
+        }
     }
 
     private fun unregisterToPostmanBroadcastReceiver() {
